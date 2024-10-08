@@ -1,7 +1,7 @@
 NAME        	= pipex
-NAME_BONUS		= checker
+NAME_BONUS		= pipex_bonus
 CC          	= gcc
-CFLAGS      	= -Wextra -Werror -Wall -I$(INC) -I$(LIBFT_DIR)inc/ -I$(PRINTF_DIR)inc/
+CFLAGS      	= -Wextra -Werror -Wall -I$(INC) -I$(LIBFT_DIR)inc/ -I$(PRINTF_DIR)inc/ -g3
 #-g3 -fsanitize=address 
 LDFLAGS     	= -L$(LIBFT_DIR) -lft -L$(PRINTF_DIR) $(PRINTF) -lftprintf
 
@@ -20,7 +20,7 @@ SRCS_FILES		= pipex.c utils.c \
 	
 BONUS_DIR    	= srcs_bonus/
 OBJS_BONUS_DIR	= objs_bonus/
-BONUS_FILES		= call_inst.c check_errors.c instructions.c main.c utils.c check_errors2.c \
+BONUS_FILES		= pipex_bonus.c utils_bonus.c\
 
 OBJS_FILES			= $(SRCS_FILES:.c=.o)
 
