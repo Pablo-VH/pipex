@@ -2,7 +2,7 @@ NAME        	= pipex
 NAME_BONUS		= pipex_bonus
 CC          	= gcc
 CFLAGS      	= -Wextra -Werror -Wall -I$(INC) -I$(LIBFT_DIR)inc/ -I$(PRINTF_DIR)inc/ -g3
-#-g3 -fsanitize=address 
+#-g3 -fsanitize=address valgrind --track-fds=yes --leak-check=full --show-leak-kinds=all --trace-children=yes 
 LDFLAGS     	= -L$(LIBFT_DIR) -lft -L$(PRINTF_DIR) $(PRINTF) -lftprintf
 
 INC         	= inc/
