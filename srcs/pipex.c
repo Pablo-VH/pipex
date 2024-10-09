@@ -32,10 +32,12 @@ void	child(char **av, int *p_fd, char **env)
 {
 	int	fd;
 
+	close(p_fd[0]);
 	fd = open_file(av[1], 0);
 	dup2(fd, 0);
+	close(fd);
 	dup2(p_fd[1], 1);
-	close(p_fd[0]);
+	close(p_fd[1]);
 	exec(av[2], env);
 }
 
@@ -43,10 +45,12 @@ void	parent(char **av, int *p_fd, char **env)
 {
 	int	fd;
 
+	close(p_fd[1]);
 	fd = open_file(av[4], 1);
 	dup2(fd, 1);
+	close(fd);
 	dup2(p_fd[0], 0);
-	close(p_fd[1]);
+	close(p_fd[0]);
 	exec(av[3], env);
 }
 
@@ -54,6 +58,7 @@ int	main(int ac, char **av, char **env)
 {
 	int		p_fd[2];
 	pid_t	pid;
+	pid_t	pid_two;
 
 	if (ac != 5)
 		exit_handler(1);
@@ -64,6 +69,18 @@ int	main(int ac, char **av, char **env)
 		exit(EXIT_FAILURE);
 	if (!pid)
 		child(av, p_fd, env);
-	parent(av, p_fd, env);
+	else
+	{
+		pid_two = fork();
+		close(p_fd[1]);
+		if (!pid_two)
+			parent(av, p_fd, env);
+		else
+		{
+			close(p_fd[0]);
+			waitpid(pid, 0, 0);
+			waitpid(pid_two, 0, 0);
+		}
+	}
 	return (0);
 }

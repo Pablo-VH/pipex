@@ -27,6 +27,7 @@ void	here_doc_put_in(char **av, int *p_fd)
 		if (ft_strncmp(ret, av[2], ft_strlen(av[2])) == 0)
 		{
 			free(ret);
+			close(p_fd[1]);
 			exit(0);
 		}
 		ft_putstr_fd(ret, p_fd[1]);
@@ -50,6 +51,7 @@ void	here_doc(char **av)
 	{
 		close(p_fd[1]);
 		dup2(p_fd[0], 0);
+		close(p_fd[0]);
 		wait(NULL);
 	}
 }
@@ -100,8 +102,8 @@ int	main(int ac, char **av, char **env)
 		fd_out = open_file(av[ac - 1], 1);
 		dup2(fd_in, 0);
 	}
-	while (i < ac - 2)
+	while (i < ac - 1)
 		do_pipe(av[i++], env);
-	dup2(fd_out, 1);
-	exec(av[ac - 2], env);
+/*	dup2(fd_out, 1);
+	exec(av[ac - 2], env);*/
 }
