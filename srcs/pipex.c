@@ -41,7 +41,7 @@ void	child(char **av, int *p_fd, char **env)
 	exec(av[2], env);
 }
 
-void	parent(char **av, int *p_fd, char **env)
+void	child_two(char **av, int *p_fd, char **env)
 {
 	int	fd;
 
@@ -54,16 +54,11 @@ void	parent(char **av, int *p_fd, char **env)
 	exec(av[3], env);
 }
 
-int	main(int ac, char **av, char **env)
+void	parent(char **av, char **env, int *p_fd)
 {
-	int		p_fd[2];
 	pid_t	pid;
 	pid_t	pid_two;
-
-	if (ac != 5)
-		exit_handler(1);
-	if (pipe(p_fd) == -1)
-		exit(EXIT_FAILURE);
+	
 	pid = fork();
 	if (pid == -1)
 		exit(EXIT_FAILURE);
@@ -71,16 +66,33 @@ int	main(int ac, char **av, char **env)
 		child(av, p_fd, env);
 	else
 	{
+		
 		pid_two = fork();
+		if (pid_two == -1)
+			exit(EXIT_FAILURE);
 		close(p_fd[1]);
 		if (!pid_two)
-			parent(av, p_fd, env);
+			child_two(av, p_fd, env);
 		else
 		{
 			close(p_fd[0]);
-			waitpid(pid, 0, 0);
-			waitpid(pid_two, 0, 0);
+			close(p_fd[1]);
+			waitpid(pid, NULL, 0);
+			waitpid(pid_two, NULL, 0);
 		}
 	}
+}
+
+int	main(int ac, char **av, char **env)
+{
+	int	p_fd[2];
+
+	if (ac != 5)
+		exit_handler(1);
+	if (check_fd(av) == -1)
+		exit(EXIT_FAILURE);
+	if (pipe(p_fd) == -1)
+		exit(EXIT_FAILURE);
+	parent(av, env, p_fd);
 	return (0);
 }
