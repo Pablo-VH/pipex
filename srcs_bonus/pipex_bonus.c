@@ -27,7 +27,7 @@ void	here_doc_put_in(char **av, int *p_fd)
 		if (ft_strncmp(ret, av[2], ft_strlen(av[2])) == 0)
 		{
 			free(ret);
-			close(p_fd[1]);
+			//close(p_fd[1]);
 			exit(0);
 		}
 		ft_putstr_fd(ret, p_fd[1]);
@@ -35,9 +35,8 @@ void	here_doc_put_in(char **av, int *p_fd)
 	}
 }
 
-void	here_doc(char **av)
+void	here_doc(char **av, int *p_fd)
 {
-	int		p_fd[2];
 	pid_t	pid;
 
 	if (pipe(p_fd) == -1)
@@ -51,15 +50,15 @@ void	here_doc(char **av)
 	{
 		close(p_fd[1]);
 		dup2(p_fd[0], 0);
-		close(p_fd[0]);
-		wait(NULL);
+		//close(p_fd[0]);
+		waitpid(pid, NULL, 0);
 	}
+	close(p_fd[0]);
 }
 
-void	do_pipe(char *cmd, char **env)
+void	do_pipe(char *cmd, char **env, int *p_fd)
 {
 	pid_t	pid;
-	int		p_fd[2];
 
 	if (pipe(p_fd) == -1)
 		exit(0);
@@ -70,12 +69,15 @@ void	do_pipe(char *cmd, char **env)
 	{
 		close(p_fd[0]);
 		dup2(p_fd[1], 1);
+		close(p_fd[1]);
 		exec(cmd, env);
 	}
 	else
 	{
 		close(p_fd[1]);
 		dup2(p_fd[0], 0);
+		close(p_fd[0]);
+		waitpid(pid, NULL, 0);
 	}
 }
 
@@ -83,27 +85,28 @@ int	main(int ac, char **av, char **env)
 {
 	int		fd_in;
 	int		fd_out;
+	int		p_fd[2];
 	int		i;
 
 	if (ac < 5)
-		exit_handler(1);
+		exit_handler(EXIT_FAILURE);
 	if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0)
 	{
 		if (ac < 6)
-			exit_handler(1);
+			exit_handler(EXIT_FAILURE);
 		i = 3;
+		here_doc(av, p_fd);
 		fd_out = open_file(av[ac - 1], 2);
-		here_doc(av);
 	}
 	else
 	{
 		i = 2;
-		fd_in = open_file(av[1], 0);
 		fd_out = open_file(av[ac - 1], 1);
+		fd_in = open_file(av[1], 0);
 		dup2(fd_in, 0);
+		close(fd_in);
 	}
-	while (i < ac - 1)
-		do_pipe(av[i++], env);
-/*	dup2(fd_out, 1);
-	exec(av[ac - 2], env);*/
+	while (i < ac - 2)
+		do_pipe(av[i++], env, p_fd);
+	do_pipe2(av[ac - 2], env, fd_out, p_fd);
 }

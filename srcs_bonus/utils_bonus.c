@@ -28,7 +28,7 @@ int	open_file(char *file, int in_or_out)
 	if (in_or_out == 2)
 		fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
-		exit(0);
+		exit(EXIT_FAILURE);
 	return (fd);
 }
 
