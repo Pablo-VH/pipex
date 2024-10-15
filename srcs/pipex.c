@@ -19,42 +19,36 @@ void	exec(char *cmd, char **env)
 
 	s_cmd = ft_split(cmd, ' ');
 	path = get_path(s_cmd[0], env);
-	if (execve(path, s_cmd, env) == -1)
+	if (path != NULL && access(path, X_OK) == 0)
+		execve(path, s_cmd, env);
+	else
 	{
-		ft_putstr_fd("pipex: command not found: ", 2);
-		ft_putendl_fd(s_cmd[0], 2);
+		perror("pipex: command not found");
 		ft_free_tab(s_cmd);
 		exit(EXIT_FAILURE);
 	}
 }
 
-void	child(char **av, int *p_fd, char **env)
+void	child(char **av, int *p_fd, char **env, int fd_out)
 {
-	int	fd;
-
 	close(p_fd[0]);
-	fd = open_file(av[1], 0);
-	dup2(fd, 0);
-	close(fd);
+	close(fd_out);
 	dup2(p_fd[1], 1);
 	close(p_fd[1]);
 	exec(av[2], env);
 }
 
-void	child_two(char **av, int *p_fd, char **env)
+void	child_two(char **av, int *p_fd, char **env, int fd_out)
 {
-	int	fd;
-
 	close(p_fd[1]);
-	fd = open_file(av[4], 1);
-	dup2(fd, 1);
-	close(fd);
+	dup2(fd_out, 1);
+	close(fd_out);
 	dup2(p_fd[0], 0);
 	close(p_fd[0]);
 	exec(av[3], env);
 }
 
-void	parent(char **av, char **env, int *p_fd)
+void	parent(char **av, char **env, int *p_fd, int fd_out)
 {
 	pid_t	pid;
 	pid_t	pid_two;
@@ -63,7 +57,7 @@ void	parent(char **av, char **env, int *p_fd)
 	if (pid == -1)
 		exit(EXIT_FAILURE);
 	if (!pid)
-		child(av, p_fd, env);
+		child(av, p_fd, env, fd_out);
 	else
 	{
 		
@@ -72,11 +66,10 @@ void	parent(char **av, char **env, int *p_fd)
 			exit(EXIT_FAILURE);
 		close(p_fd[1]);
 		if (!pid_two)
-			child_two(av, p_fd, env);
+			child_two(av, p_fd, env, fd_out);
 		else
 		{
-			close(p_fd[0]);
-			close(p_fd[1]);
+			close_fds(p_fd, fd_out);
 			waitpid(pid, NULL, 0);
 			waitpid(pid_two, NULL, 0);
 		}
@@ -86,13 +79,20 @@ void	parent(char **av, char **env, int *p_fd)
 int	main(int ac, char **av, char **env)
 {
 	int	p_fd[2];
+	int	fd_in;
+	int	fd_out;
 
 	if (ac != 5)
 		exit_handler(1);
-	if (check_fd(av) == -1)
-		exit(EXIT_FAILURE);
 	if (pipe(p_fd) == -1)
 		exit(EXIT_FAILURE);
-	parent(av, env, p_fd);
+	fd_in = open_file(av[1], 0);
+	if (fd_in > 0)
+	{
+		dup2(fd_in, 0);
+		close(fd_in);
+	}
+	fd_out = open_file(av[4], 1);
+	parent(av, env, p_fd, fd_out);
 	return (0);
 }

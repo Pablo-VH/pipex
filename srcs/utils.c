@@ -26,7 +26,7 @@ int	open_file(char *file, int in_or_out)
 	if (in_or_out == 0)
 	{
 		fd = open(file, O_RDONLY, 0644);
-		if (fd == -1)
+				if (fd == -1)
 		{
 			if (access(file, F_OK) == 0)
 				ft_putstr_fd("pipex: permission denied : ", 2);
@@ -37,8 +37,6 @@ int	open_file(char *file, int in_or_out)
 	}
 	if (in_or_out == 1)
 		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd == -1)
-		exit(EXIT_FAILURE);
 	return (fd);
 }
 
@@ -87,6 +85,10 @@ char	*get_path(char	*cmd, char **env)
 	char	*part_p;
 
 	i = -1;
+	if (ft_getenv("PATH", env) == NULL && access(cmd, 0) == 0)
+		return (cmd);
+	if (ft_getenv("PATH", env) == NULL)
+		return (NULL);
 	allpath = ft_split(ft_getenv("PATH", env), ':');
 	while (allpath[++i])
 	{
@@ -94,9 +96,12 @@ char	*get_path(char	*cmd, char **env)
 		exect = ft_strjoin(part_p, cmd);
 		free(part_p);
 		if (access(exect, F_OK | X_OK) == 0)
+		{
+			ft_free_tab(allpath);
 			return (exect);
+		}
 		free(exect);
 	}
 	ft_free_tab(allpath);
-	return (cmd);
+	return (NULL);
 }
