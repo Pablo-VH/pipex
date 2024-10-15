@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pavicent <pavicent@student.42madrid>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/15 13:40:51 by pavicent          #+#    #+#             */
+/*   Updated: 2024/10/15 13:40:53 by pavicent         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex_bonus.h"
 
 void	exec(char *cmd, char **env)
@@ -7,12 +19,13 @@ void	exec(char *cmd, char **env)
 
 	s_cmd = ft_split(cmd, ' ');
 	path = get_path(s_cmd[0], env);
-	if (execve(path, s_cmd, env) == -1)
+	if (path != NULL && access(path, X_OK) == 0)
+		execve(path, s_cmd, env);
+	else
 	{
-		ft_putstr_fd("pipex: command not found: ", 2);
-		ft_putendl_fd(s_cmd[0], 2);
+		perror("pipex: command not found");
 		ft_free_tab(s_cmd);
-		exit(0);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -27,7 +40,7 @@ void	here_doc_put_in(char **av, int *p_fd)
 		if (ft_strncmp(ret, av[2], ft_strlen(av[2])) == 0)
 		{
 			free(ret);
-			//close(p_fd[1]);
+			close(p_fd[1]);
 			exit(0);
 		}
 		ft_putstr_fd(ret, p_fd[1]);
@@ -35,7 +48,7 @@ void	here_doc_put_in(char **av, int *p_fd)
 	}
 }
 
-void	here_doc(char **av, int *p_fd)
+void	here_doc(char **av, int *p_fd, int fd_out)
 {
 	pid_t	pid;
 
@@ -45,18 +58,21 @@ void	here_doc(char **av, int *p_fd)
 	if (pid == -1)
 		exit(EXIT_FAILURE);
 	if (!pid)
+	{
+		if (fd_out > 2)
+			close(fd_out);
 		here_doc_put_in(av, p_fd);
+	}
 	else
 	{
 		close(p_fd[1]);
 		dup2(p_fd[0], 0);
-		//close(p_fd[0]);
+		close(p_fd[0]);
 		waitpid(pid, NULL, 0);
 	}
-	close(p_fd[0]);
 }
 
-void	do_pipe(char *cmd, char **env, int *p_fd)
+void	do_pipe(char *cmd, char **env, int *p_fd, int fd_out)
 {
 	pid_t	pid;
 
@@ -67,6 +83,8 @@ void	do_pipe(char *cmd, char **env, int *p_fd)
 		exit(0);
 	if (!pid)
 	{
+		if (fd_out > 2)
+			close(fd_out);
 		close(p_fd[0]);
 		dup2(p_fd[1], 1);
 		close(p_fd[1]);
@@ -77,7 +95,6 @@ void	do_pipe(char *cmd, char **env, int *p_fd)
 		close(p_fd[1]);
 		dup2(p_fd[0], 0);
 		close(p_fd[0]);
-		waitpid(pid, NULL, 0);
 	}
 }
 
@@ -95,18 +112,17 @@ int	main(int ac, char **av, char **env)
 		if (ac < 6)
 			exit_handler(EXIT_FAILURE);
 		i = 3;
-		here_doc(av, p_fd);
 		fd_out = open_file(av[ac - 1], 2);
+		here_doc(av, p_fd, fd_out);
 	}
 	else
 	{
 		i = 2;
 		fd_out = open_file(av[ac - 1], 1);
 		fd_in = open_file(av[1], 0);
-		dup2(fd_in, 0);
-		close(fd_in);
+		check_fd_in(fd_in);
 	}
 	while (i < ac - 2)
-		do_pipe(av[i++], env, p_fd);
+		do_pipe(av[i++], env, p_fd, fd_out);
 	do_pipe2(av[ac - 2], env, fd_out, p_fd);
 }

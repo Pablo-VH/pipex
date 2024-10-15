@@ -15,12 +15,12 @@ PRINTF			= $(PRINTF_DIR)libftprintf.a
 
 SRCS_DIR    	= srcs/
 OBJS_DIR    	= objs/
-SRCS_FILES		= pipex.c utils.c \
+SRCS_FILES		= pipex.c utils.c utils_2.c \
 				
 	
 BONUS_DIR    	= srcs_bonus/
 OBJS_BONUS_DIR	= objs_bonus/
-BONUS_FILES		= pipex_bonus.c utils_bonus.c\
+BONUS_FILES		= pipex_bonus.c utils_bonus.c utils_2_bonus.c \
 
 OBJS_FILES			= $(SRCS_FILES:.c=.o)
 
