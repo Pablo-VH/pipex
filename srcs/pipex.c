@@ -52,7 +52,7 @@ void	parent(char **av, char **env, int *p_fd, int fd_out)
 {
 	pid_t	pid;
 	pid_t	pid_two;
-	
+
 	pid = fork();
 	if (pid == -1)
 		exit(EXIT_FAILURE);
@@ -60,7 +60,6 @@ void	parent(char **av, char **env, int *p_fd, int fd_out)
 		child(av, p_fd, env, fd_out);
 	else
 	{
-		
 		pid_two = fork();
 		if (pid_two == -1)
 			exit(EXIT_FAILURE);

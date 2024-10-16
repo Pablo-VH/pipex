@@ -26,7 +26,7 @@ int	open_file(char *file, int in_or_out)
 	if (in_or_out == 0)
 	{
 		fd = open(file, O_RDONLY, 0644);
-				if (fd == -1)
+		if (fd == -1)
 		{
 			if (access(file, F_OK) == 0)
 				ft_putstr_fd("pipex: permission denied : ", 2);
