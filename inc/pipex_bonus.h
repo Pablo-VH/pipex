@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pavicent <pavicent@student.42madrid>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/16 10:07:28 by pavicent          #+#    #+#             */
+/*   Updated: 2024/10/16 10:08:17 by pavicent         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PIPEX_BONUS_H
 # define PIPEX_BONUS_H
 # include <stdio.h>
@@ -13,7 +25,10 @@
 char	*ft_getenv(char *name, char **env);
 char	*get_path(char	*cmd, char **env);
 int		open_file(char *file, int in_or_out);
+void	check_fd_in(int fd_in);
+void	exec(char *cmd, char **env);
 void	exit_handler(int n_ex);
+void	do_pipe2(char *cmd, char **env, int fd, int *p_fd);
 void	ft_free_tab(char **tab);
 
 #endif
