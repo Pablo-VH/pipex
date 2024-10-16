@@ -92,6 +92,9 @@ int	main(int ac, char **av, char **env)
 		close(fd_in);
 	}
 	fd_out = open_file(av[4], 1);
-	parent(av, env, p_fd, fd_out);
+	if (fd_in < 0)
+		child_two(av, p_fd, env, fd_out);
+	else
+		parent(av, env, p_fd, fd_out);
 	return (0);
 }

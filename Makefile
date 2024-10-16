@@ -57,7 +57,9 @@ $(PRINTF):
 	@echo "\nCompiling $(BLUE)printf$(DEF_COLOR)"
 	@make -sC $(PRINTF_DIR)
 
-bonus: $(LIBFT) $(PRINTF) $(OBJS_BONUS) 
+bonus: $(NAME_BONUS)
+
+$(NAME_BONUS): $(LIBFT) $(PRINTF) $(OBJS_BONUS) 
 	@echo "\nCompiling $(BLUE)$(NAME_BONUS)$(DEF_COLOR)"
 	@$(CC) $(CFLAGS) $(OBJS_BONUS) $(LDFLAGS) -o $(NAME_BONUS)
 	@echo "\n$(GREEN)$(NAME_BONUS) compiled!$(DEF_COLOR)"
