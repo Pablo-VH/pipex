@@ -40,9 +40,9 @@ void	do_pipe2(char *cmd, char **env, int fd, int *p_fd)
 
 void	check_fd_in(int fd_in)
 {
-		if (fd_in > 0)
-		{
-			dup2(fd_in, 0);
-			close(fd_in);
-		}
+	if (fd_in > 0)
+	{
+		dup2(fd_in, 0);
+		close(fd_in);
+	}
 }
