@@ -38,10 +38,19 @@ void	do_pipe2(char *cmd, char **env, int fd, int *p_fd)
 	}
 }
 
-void	check_fd_in(int fd_in)
+void	check_fd_in(int fd_in, int *i)
 {
 	if (fd_in > 0)
 	{
+		dup2(fd_in, 0);
+		close(fd_in);
+	}
+	else
+	{
+		*i = 3;
+		fd_in = open("/dev/null", O_RDONLY);
+		if (fd_in == -1)
+			exit(EXIT_FAILURE);
 		dup2(fd_in, 0);
 		close(fd_in);
 	}

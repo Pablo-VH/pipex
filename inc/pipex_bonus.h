@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pavicent <pavicent@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/16 10:07:28 by pavicent          #+#    #+#             */
-/*   Updated: 2024/10/16 10:08:17 by pavicent         ###   ########.fr       */
+/*   Created: 2024/10/15 13:42:09 by pavicent          #+#    #+#             */
+/*   Updated: 2024/10/15 13:42:11 by pavicent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 char	*ft_getenv(char *name, char **env);
 char	*get_path(char	*cmd, char **env);
 int		open_file(char *file, int in_or_out);
-void	check_fd_in(int fd_in);
+void	check_fd_in(int fd_in, int *i);
 void	exec(char *cmd, char **env);
 void	exit_handler(int n_ex);
 void	do_pipe2(char *cmd, char **env, int fd, int *p_fd);

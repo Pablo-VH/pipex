@@ -76,8 +76,6 @@ void	do_pipe(char *cmd, char **env, int *p_fd, int fd_out)
 {
 	pid_t	pid;
 
-	if (pipe(p_fd) == -1)
-		exit(0);
 	pid = fork();
 	if (pid == -1)
 		exit(0);
@@ -105,22 +103,22 @@ int	main(int ac, char **av, char **env)
 	int		p_fd[2];
 	int		i;
 
+	if (pipe(p_fd) == -1)
+		exit(0);
 	if (ac < 5)
 		exit_handler(EXIT_FAILURE);
-	if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0)
+	if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac > 5)
 	{
-		if (ac < 6)
-			exit_handler(EXIT_FAILURE);
 		i = 3;
 		fd_out = open_file(av[ac - 1], 2);
 		here_doc(av, p_fd, fd_out);
 	}
-	else
+	else if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) != 0)
 	{
 		i = 2;
 		fd_out = open_file(av[ac - 1], 1);
 		fd_in = open_file(av[1], 0);
-		check_fd_in(fd_in);
+		check_fd_in(fd_in, &i);
 	}
 	while (i < ac - 2)
 		do_pipe(av[i++], env, p_fd, fd_out);
