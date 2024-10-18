@@ -19,6 +19,13 @@ void	exec(char *cmd, char **env)
 
 	s_cmd = ft_split(cmd, ' ');
 	path = get_path(s_cmd[0], env);
+	if (s_cmd[0][0] != '.' && s_cmd[0][0] != '/')
+		path = get_path(s_cmd[0], env);
+	else
+	{
+		if (access(cmd, 0) == 0)
+		path = s_cmd[0];
+	}
 	if (path != NULL && access(path, X_OK) == 0)
 		execve(path, s_cmd, env);
 	else
