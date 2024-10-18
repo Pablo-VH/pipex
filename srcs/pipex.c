@@ -23,8 +23,8 @@ void	exec(char *cmd, char **env)
 	else
 	{
 		if (access(cmd, 0) == 0)
-		path = s_cmd[0];
-	} 
+			path = s_cmd[0];
+	}
 	if (path != NULL && access(path, X_OK) == 0)
 		execve(path, s_cmd, env);
 	else
