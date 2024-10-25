@@ -42,19 +42,6 @@ int	open_file(char *file, int in_or_out)
 	return (fd);
 }
 
-void	ft_free_tab(char **tab)
-{
-	size_t	i;
-
-	i = 0;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
-}
-
 char	*ft_getenv(char *name, char **env)
 {
 	int		i;

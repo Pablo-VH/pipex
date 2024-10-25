@@ -12,6 +12,28 @@
 
 #include "pipex_bonus.h"
 
+void	do_fork(t_pipes *data, int i)
+{
+	data->pids[i] = fork();
+	if (data->pids[i] == -1)
+	{
+		if (data->pids)
+			free(data->pids);
+		perror("fork");
+		close_pipes(data, data->num_cmds);
+		return (1);
+	}
+	return (0);
+}
+
+void	init_outflags(t_lists *lst, t_lists *first)
+{
+	if (first->docs->flag == 1)
+		lst->docs->flag = 3;
+	else
+		lst->docs->flag = 4;
+}
+
 void	do_pipe2(char *cmd, char **env, int fd, int *p_fd)
 {
 	pid_t	pid;
@@ -54,4 +76,24 @@ void	check_fd_in(int fd_in, int *i)
 		dup2(fd_in, 0);
 		close(fd_in);
 	}
+}
+
+int	add_list(t_lists *list)
+{
+	t_lists	*new;
+	t_list	*tmp;
+
+	tmp = list;
+	new = (t_lists *)malloc(sizeof(t_lists));
+	if (!new)
+		return (1);
+	new->docs = (t_docs *)malloc(sizeof(t_docs));
+	if (!new->docs)
+		return (1);
+	new->next = NULL;
+	while (list->next)
+		list = list->next;
+	list->next = new;
+	list = tmp;
+	return (0);
 }
