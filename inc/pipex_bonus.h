@@ -47,13 +47,13 @@ typedef struct s_pipes
 char	*ft_getenv(char *name, char **env);
 char	*get_path(char	*cmd, char **env);
 int		add_list(t_lists *list);
+int		do_fork(t_pipes *data, int i);
 int		get_cmd(t_pipes *data, char **av);
 int		init_fd(t_pipes *data);
 int		init_list(t_pipes *data, int ac);
 int		init_pid(t_pipes *data, int ac);
 int		open_file(char *file, int in_or_out);
 void	check_fd_in(int fd_in, int *i);
-void	do_fork(t_pipes *data, int i);
 void	do_pipe2(char *cmd, char **env, int fd, int *p_fd);
 void	exec(char *cmd, char **env);
 void	exit_handler(int n_ex);

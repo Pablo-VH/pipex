@@ -68,3 +68,21 @@ void	ft_free_tab(char **tab)
 	}
 	free(tab);
 }
+
+void	free_lists(t_lists *lst)
+{
+	t_lists	*tmp;
+
+	while (lst->next)
+	{
+		tmp = lst;
+		lst = lst->next;
+		if (tmp->docs)
+		{
+			if (tmp->docs->file)
+				free(tmp->docs->file);
+			free(tmp->docs);
+		}
+		free(tmp);
+	}
+}

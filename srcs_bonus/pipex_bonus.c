@@ -116,13 +116,14 @@ int	main(int ac, char **av, char **env)
 		return (1);
 	if (init_list(&data, ac))
 		return (1);
-	if (get_cmd_here(&data, av, ac) && get_cmd(&data, av, ac))
+	if (get_cmd(&data, av))
 	{
 		ft_free_struct(&data);
 		return (1);
 	}
 	if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac <= 5)
 		ft_free_struct(&data);
+	child_process();
 	else if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac > 5)
 		here_doc(&data);
 	else

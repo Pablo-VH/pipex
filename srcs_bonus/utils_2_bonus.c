@@ -12,7 +12,7 @@
 
 #include "pipex_bonus.h"
 
-void	do_fork(t_pipes *data, int i)
+int	do_fork(t_pipes *data, int i)
 {
 	data->pids[i] = fork();
 	if (data->pids[i] == -1)
