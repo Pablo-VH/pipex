@@ -26,11 +26,6 @@ void	ft_free_struct(t_pipes *data)
 		}
 	}
 	i = 0;
-	if (data->pids[i])
-	{
-		free(data->pids[i]);
-		i++;
-	}
 	if (data->pids)
 		free(data->pids);
 	free_fd(data);
