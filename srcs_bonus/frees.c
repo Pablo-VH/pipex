@@ -17,17 +17,23 @@ void	ft_free_struct(t_pipes *data)
 	int	i;
 
 	i = 0;
-	while (data->fd[i])
+	if (data->fd)
 	{
-		free(data->fd[i]);
-		i++;
+		while (data->fd[i])
+		{
+			free(data->fd[i]);
+			i++;
+		}
 	}
 	i = 0;
+	if (data->pids[i])
+	{
+		free(data->pids[i]);
+		i++;
+	}
 	if (data->pids)
 		free(data->pids);
-	i = 0;
-	if (data->fd)
-		free(data->fd);
+	free_fd(data);
 	if (data->list)
 		free_lists(data->list);
 	free(data);

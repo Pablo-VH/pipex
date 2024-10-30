@@ -58,6 +58,7 @@ void	close_pipes(t_pipes *data, int i);
 void	do_pipe2(char *cmd, char **env, int fd, int *p_fd);
 void	exec(char *cmd, char **env);
 void	exit_handler(int n_ex);
+void	free_fd(t_pipes *data);
 void	free_lists(t_lists *lst);
 void	ft_free_struct(t_pipes *data);
 void	ft_free_tab(char **tab);
