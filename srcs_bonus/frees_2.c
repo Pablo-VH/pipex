@@ -28,5 +28,6 @@ void	free_fd(t_pipes *data)
 			}
 		}
 		free(data->fd);
+		data->fd = NULL;
 	}
 }
