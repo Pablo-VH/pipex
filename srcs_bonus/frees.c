@@ -26,13 +26,6 @@ void	ft_free_struct(t_pipes *data)
 	if (data->pids)
 		free(data->pids);
 	i = 0;
-	while (data->cmds[i])
-	{
-		free(data->cmds[i]);
-		i++;
-	}
-	if (data->cmds)
-		free(data->cmds);
 	if (data->fd)
 		free(data->fd);
 	if (data->list)
@@ -85,4 +78,21 @@ void	free_lists(t_lists *lst)
 		}
 		free(tmp);
 	}
+}
+
+void	close_files(t_lists *list)
+{
+	t_lists	*tmp;
+
+	tmp = list;
+	while (list)
+	{
+		if (list->docs->fd > 0)
+		{
+			close(list->docs->fd);
+			list->docs->fd = -1;
+		}
+		list = list->next;
+	}
+	list = tmp;
 }

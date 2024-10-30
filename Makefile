@@ -20,7 +20,7 @@ SRCS_FILES		= pipex.c utils.c utils_2.c \
 	
 BONUS_DIR    	= srcs_bonus/
 OBJS_BONUS_DIR	= objs_bonus/
-BONUS_FILES		= pipex_bonus.c utils_bonus.c utils_2_bonus.c \
+BONUS_FILES		= pipex_bonus.c utils_bonus.c utils_2_bonus.c redirs.c init_fts.c frees.c \
 
 OBJS_FILES			= $(SRCS_FILES:.c=.o)
 

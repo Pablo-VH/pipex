@@ -19,14 +19,13 @@ void	exit_handler(int n_ex)
 	exit (EXIT_FAILURE);
 }
 
-int	open_file(char *file, int in_or_out)
+void	open_file(char *file, int in_or_out, int *fd)
 {
-	int	fd;
 
-	if (in_or_out == 0)
+	if (in_or_out == 2)
 	{
-		fd = open(file, O_RDONLY, 0644);
-		if (fd == -1)
+		*fd = open(file, O_RDONLY, 0644);
+		if (*fd == -1)
 		{
 			if (access(file, F_OK) == 0)
 				ft_putstr_fd("pipex: permission denied : ", 2);
@@ -35,11 +34,10 @@ int	open_file(char *file, int in_or_out)
 			ft_putendl_fd(file, 2);
 		}
 	}
-	if (in_or_out == 1)
-		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (in_or_out == 2)
-		fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	return (fd);
+	if (in_or_out == 4)
+		*fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (in_or_out == 3)
+		*fd = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 }
 
 char	*ft_getenv(char *name, char **env)
@@ -93,4 +91,23 @@ char	*get_path(char	*cmd, char **env)
 	}
 	ft_free_tab(allpath);
 	return (NULL);
+}
+
+void	parent_process(t_pipes *data, int i, int ac, char **env)
+{
+	t_lists *tmp;
+
+	tmp = data->list;
+	while (i < ac)
+	{
+		if (child_process(data, env, i, tmp))
+			break ;
+		data->list = data->list->next;
+		i++;
+	}
+	data->list = tmp;
+	close_pipes(data, 0);
+	close_files(data->list);
+	wait_pids(data, 0);
+	ft_free_struct(data);
 }

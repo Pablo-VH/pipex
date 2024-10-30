@@ -17,7 +17,7 @@ int	get_cmd(t_pipes *data, char **av)
 	int		i;
 	t_lists	*tmp;
 
-	i = 0;
+	i = 1;
 	tmp = data->list;
 	while (data->list->next)
 	{
@@ -36,7 +36,7 @@ void	init_inflag(t_pipes *data)
 
 	tmp = data->list;
 	if (ft_strncmp(data->list->docs->file, "here_doc",
-			ft_strlen(data->list->docs->file)))
+			ft_strlen(data->list->docs->file)) == 0)
 	{
 		data->list->docs->flag = 1;
 		data->list = data->list->next;
@@ -59,18 +59,18 @@ void	init_inflag(t_pipes *data)
 	data->list = tmp;
 }
 
-int	init_pid(t_pipes *data, int ac)
+int	init_pid(t_pipes **data, int ac)
 {
-	data = calloc(1, sizeof(t_pipes));
-	data->num_cmds = ac - 3;
-	data->pids = malloc(sizeof(pid_t) * (data->num_cmds));
-	if (!data->pids)
+	(*data) = ft_calloc(1, sizeof(t_pipes));
+	(*data)->num_cmds = ac - 1;
+	(*data)->pids = malloc(sizeof(pid_t) * ((*data)->num_cmds));
+	if (!(*data)->pids)
 	{
 		perror("malloc pids");
-		ft_free_struct(data);
+		ft_free_struct(*data);
 		return (1);
 	}
-	if (init_fd(data))
+	if (init_fd(*data))
 		return (1);
 	return (0);
 }

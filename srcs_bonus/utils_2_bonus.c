@@ -12,7 +12,7 @@
 
 #include "pipex_bonus.h"
 
-int	do_fork(t_pipes *data, int i)
+int	do_fork(t_pipes *data, int i) //sacarlo fuera?
 {
 	data->pids[i] = fork();
 	if (data->pids[i] == -1)
@@ -60,28 +60,24 @@ void	do_pipe2(char *cmd, char **env, int fd, int *p_fd)
 	}
 }
 
-void	check_fd_in(int fd_in, int *i)
+void	check_fd_in(int *fd)
 {
-	if (fd_in > 0)
+	if (*fd > 0)
 	{
-		dup2(fd_in, 0);
-		close(fd_in);
+		return ;
 	}
 	else
 	{
-		*i = 3;
-		fd_in = open("/dev/null", O_RDONLY);
-		if (fd_in == -1)
+		*fd = open("/dev/null", O_RDONLY);
+		if (*fd == -1)
 			exit(EXIT_FAILURE);
-		dup2(fd_in, 0);
-		close(fd_in);
 	}
 }
 
 int	add_list(t_lists *list)
 {
 	t_lists	*new;
-	t_list	*tmp;
+	t_lists	*tmp;
 
 	tmp = list;
 	new = (t_lists *)malloc(sizeof(t_lists));

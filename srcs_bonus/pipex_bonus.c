@@ -36,13 +36,13 @@ void	exec(char *cmd, char **env)
 	}
 }
 
-void	here_doc_put_in(char **av, int *p_fd)
+void	here_doc_put_in(t_pipes *data, int i)
 {
 	char	*ret;
 	char	*limitador;
 
-	close(p_fd[0]);
-	limitador = ft_strjoin(av[2], "\n");
+	close(data->fd[i][0]);
+	limitador = ft_strjoin(data->list->next->docs->file, "\n");
 	while (1)
 	{
 		ret = get_next_line(0);
@@ -50,18 +50,16 @@ void	here_doc_put_in(char **av, int *p_fd)
 		{
 			free(ret);
 			free(limitador);
-			close(p_fd[1]);
+			close(data->fd[i][1]);
 			exit(0);
 		}
-		ft_putstr_fd(ret, p_fd[1]);
+		ft_putstr_fd(ret, data->fd[i][1]);
 		free(ret);
 	}
 }
 
-void	here_doc(char **av, int *p_fd, int fd_out)
+/*void	here_doc(t_pipes *data)
 {
-	pid_t	pid;
-
 	if (pipe(p_fd) == -1)
 		exit(EXIT_FAILURE);
 	pid = fork();
@@ -80,55 +78,49 @@ void	here_doc(char **av, int *p_fd, int fd_out)
 		close(p_fd[0]);
 		waitpid(pid, NULL, 0);
 	}
-}
+}*/
 
-int	do_pipe(t_pipes *data, char **env, int i)
+int	child_process(t_pipes *data, char **env, int i, t_lists *tmp)
 {
 	if (do_fork(data, i))
 		return (1);
-	if (!data->pids[i])
+	if (data->pids[i] == 0)
 	{
-		if (data->list->docs->flag != -1)
-			redir_files(data, data->list);
-		redir_pipes(data, i);
-		close(data->fd[i][0]);
-		dup2(data->fd[i][1], 1);
-		close(data->fd[i][1]);
-		exec(data->cmds[i], env);
-	}
-	else
-	{
-		close(data->fd[i][1]);
-		dup2(data->fd[i][0], 0);
-		close(data->fd[i][0]);
+		if (data->list->docs->flag != -1 && data->list->docs->flag != 100)
+			redir_files(data, data->list, i);
+		if (data->list->docs->flag == 100)
+			 return (0); 
+		close_files(tmp);
+		pipes_redirs(data, i, tmp);
+		exec(data->list->docs->file, env);
 	}
 	return (0);
 }
 
 int	main(int ac, char **av, char **env)
 {
-	t_pipes	data;
-	int		i;
+	t_pipes	*data;
 
 	if (ac < 5)
 		exit_handler(EXIT_FAILURE);
 	if (init_pid(&data, ac))
 		return (1);
-	if (init_list(&data, ac))
+	if (init_list(data, ac))
 		return (1);
-	if (get_cmd(&data, av))
+	if (get_cmd(data, av))
 	{
-		ft_free_struct(&data);
+		ft_free_struct(data);
 		return (1);
 	}
+	init_files(data);
 	if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac <= 5)
-		ft_free_struct(&data);
-	child_process();
-	else if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac > 5)
+		ft_free_struct(data);
+	parent_process(data, 0, ac - 1, env);
+	/*else if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac > 5)
 		here_doc(&data);
 	else
 		first_pipe(&data, av);
 	while (i < ac - 2)
 		do_pipe(&data, env);
-	do_pipe2(av[ac - 2], env, fd_out, p_fd);
+	do_pipe2(av[ac - 2], env, fd_out, p_fd);*/
 }
