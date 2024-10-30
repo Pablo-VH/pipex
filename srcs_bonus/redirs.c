@@ -85,7 +85,6 @@ void	init_files(t_pipes *data)
 				&data->list->docs->fd);
 		if (data->list->docs->flag == 2)
             check_fd_in(&data->list->docs->fd);
-		ft_printf("%d\n", data->list->docs->fd);
 		data->list = data->list->next;
 	}
 	data->list = tmp;

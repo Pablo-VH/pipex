@@ -26,6 +26,7 @@ void	exec(char *cmd, char **env)
 		if (access(cmd, 0) == 0)
 			path = s_cmd[0];
 	}
+	ft_printf("%s\n", path);
 	if (path != NULL && access(path, X_OK) == 0)
 		execve(path, s_cmd, env);
 	else

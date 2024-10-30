@@ -48,6 +48,7 @@ void	close_pipes(t_pipes *data, int i)
 	}
 	if (data->fd)
 		free(data->fd);
+	data->fd = NULL;
 }
 
 void	ft_free_tab(char **tab)
