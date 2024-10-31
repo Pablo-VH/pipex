@@ -19,7 +19,7 @@ int	get_cmd(t_pipes *data, char **av)
 
 	i = 1;
 	tmp = data->list;
-	while (data->list->next)
+	while (data->list)
 	{
 		data->list->docs->file = ft_strdup(av[i]);
 		data->list = data->list->next;
@@ -48,10 +48,8 @@ void	init_inflag(t_pipes *data)
 		data->list->docs->flag = 2;
 		data->list = data->list->next;
 	}
-	while (data->list->next)
+	while (data->list->next != NULL)
 	{
-		if (data->list->next == NULL)
-			break ;
 		data->list->docs->flag = -1;
 		data->list = data->list->next;
 	}
@@ -61,7 +59,6 @@ void	init_inflag(t_pipes *data)
 
 int	init_pid(t_pipes **data, int ac)
 {
-	(*data) = ft_calloc(1, sizeof(t_pipes));
 	(*data)->num_cmds = ac - 1;
 	(*data)->pids = malloc(sizeof(pid_t) * ((*data)->num_cmds));
 	if (!(*data)->pids)
@@ -80,10 +77,10 @@ int	init_fd(t_pipes *data)
 	int	i;
 
 	i = 0;
-	data->fd = ft_calloc(data->num_cmds, sizeof(int **));
-	while (i < data->num_cmds)
+	data->fd = (int **)ft_calloc(data->num_cmds, sizeof(int *));
+	while (i < data->num_cmds - 1)
 	{
-		data->fd[i] = ft_calloc(2, sizeof(int *));
+		data->fd[i] = ft_calloc(2, sizeof(int));
 		if (data->fd[i] == NULL || (pipe(data->fd[i]) == -1))
 		{
 			perror("malloc fd or pipe");
@@ -100,7 +97,7 @@ int	init_list(t_pipes *data, int ac)
 	int		i;
 	t_lists	*tmp;
 
-	i = 0;
+	i = 1;
 	data->list = (t_lists *)malloc(sizeof(t_lists));
 	data->list->docs = (t_docs *)malloc(sizeof(t_docs));
 	if (!data->list)
@@ -110,7 +107,7 @@ int	init_list(t_pipes *data, int ac)
 	}
 	data->list->next = NULL;
 	tmp = data->list;
-	while (i < ac)
+	while (i < ac - 1)
 	{
 		if (add_list(data->list))
 		{

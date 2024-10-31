@@ -26,7 +26,6 @@ void	exec(char *cmd, char **env)
 		if (access(cmd, 0) == 0)
 			path = s_cmd[0];
 	}
-	ft_printf("%s\n", path);
 	if (path != NULL && access(path, X_OK) == 0)
 		execve(path, s_cmd, env);
 	else
@@ -104,6 +103,7 @@ int	main(int ac, char **av, char **env)
 
 	if (ac < 5)
 		exit_handler(EXIT_FAILURE);
+	data = ft_calloc(1, sizeof(t_pipes));
 	if (init_pid(&data, ac))
 		return (1);
 	if (init_list(data, ac))

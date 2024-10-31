@@ -24,6 +24,7 @@ void	ft_free_struct(t_pipes *data)
 			free(data->fd[i]);
 			i++;
 		}
+		free(data->fd);
 	}
 	i = 0;
 	if (data->pids)
@@ -47,7 +48,14 @@ void	close_pipes(t_pipes *data, int i)
 		i++;
 	}
 	if (data->fd)
+	{
+		while (data->fd[i])
+		{
+			free(data->fd[i]);
+			i++;
+		}
 		free(data->fd);
+	}
 	data->fd = NULL;
 }
 
@@ -68,7 +76,7 @@ void	free_lists(t_lists *lst)
 {
 	t_lists	*tmp;
 
-	while (lst->next)
+	while (lst)
 	{
 		tmp = lst;
 		lst = lst->next;
@@ -89,10 +97,12 @@ void	close_files(t_lists *list)
 	tmp = list;
 	while (list)
 	{
-		if (list->docs->fd > 0)
+		if (list->docs->flag > 0 && list->docs->flag != 100)
 		{
+			//ft_printf("%d\n", list->docs->flag);
+			ft_printf("%d\n", list->docs->fd);
 			close(list->docs->fd);
-			list->docs->fd = -1;
+			//list->docs->fd = -1;
 		}
 		list = list->next;
 	}

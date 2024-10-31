@@ -92,7 +92,7 @@ void	init_files(t_pipes *data)
 
 void	wait_pids(t_pipes *data, int i)
 {
-	while (i < data->num_cmds)
+	while (i < data->num_cmds - 1)
 	{
 		if (data->pids)
 		{
