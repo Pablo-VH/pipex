@@ -25,7 +25,7 @@ void	pipes_redirs(t_pipes *data, int i, t_lists *list)
 			exit(1);
 		}
 	}
-	if (i < data->num_cmds)
+	if (i < data->num_cmds - 1)
 	{
 		if (dup2(data->fd[i][1], 1) == -1)
 		{
@@ -39,7 +39,7 @@ void	pipes_redirs(t_pipes *data, int i, t_lists *list)
 	close_pipes(data, 0);
 }
 
-void	duplication(t_pipes *data,int std, t_lists *list)
+void	duplication(t_pipes *data, int std, t_lists *list)
 {
 	if (data->list->docs->fd < 0)
 	{
@@ -56,7 +56,7 @@ void	duplication(t_pipes *data,int std, t_lists *list)
 		exit(1);
 	}
 	close(data->list->docs->fd);
-	data->list->docs->fd = -1;
+	//data->list->docs->fd = -1;
 }
 
 void	redir_files(t_pipes *data, t_lists *list, int i)
@@ -92,7 +92,7 @@ void	init_files(t_pipes *data)
 
 void	wait_pids(t_pipes *data, int i)
 {
-	while (i < data->num_cmds - 1)
+	while (i < data->num_cmds)
 	{
 		if (data->pids)
 		{

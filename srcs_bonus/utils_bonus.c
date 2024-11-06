@@ -24,7 +24,6 @@ void	open_file(char *file, int in_or_out, int *fd)
 	if (in_or_out == 2)
 	{
 		*fd = open(file, O_RDONLY, 0644);
-		ft_printf("fd = %i\n %s\n", *fd, file);
 		if (*fd == -1)
 		{
 			if (access(file, F_OK) == 0)
@@ -93,12 +92,12 @@ char	*get_path(char	*cmd, char **env)
 	return (NULL);
 }
 
-void	parent_process(t_pipes *data, int i, int ac, char **env)
+void	parent_process(t_pipes *data, int i, char **env)
 {
 	t_lists *tmp;
 
 	tmp = data->list;
-	while (i < ac - 1)
+	while (i < data->num_cmds -1)
 	{
 		if (child_process(data, env, i, tmp))
 			break ;
@@ -107,7 +106,6 @@ void	parent_process(t_pipes *data, int i, int ac, char **env)
 	}
 	data->list = tmp;
 	close_pipes(data, 0);
-	ft_printf("Padre\n");
 	close_files(data->list);
 	wait_pids(data, 0);
 	ft_free_struct(data);

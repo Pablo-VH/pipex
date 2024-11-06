@@ -77,7 +77,7 @@ int	init_fd(t_pipes *data)
 	int	i;
 
 	i = 0;
-	data->fd = (int **)ft_calloc(data->num_cmds, sizeof(int *));
+	data->fd = ft_calloc(data->num_cmds, sizeof(int *));
 	while (i < data->num_cmds - 1)
 	{
 		data->fd[i] = ft_calloc(2, sizeof(int));
@@ -106,6 +106,7 @@ int	init_list(t_pipes *data, int ac)
 		return (1);
 	}
 	data->list->next = NULL;
+	data->list->docs->fd = -1;
 	tmp = data->list;
 	while (i < ac - 1)
 	{

@@ -18,7 +18,6 @@ void	exec(char *cmd, char **env)
 	char	*path;
 
 	s_cmd = ft_split(cmd, ' ');
-	path = get_path(s_cmd[0], env);
 	if (s_cmd[0][0] != '.' && s_cmd[0][0] != '/')
 		path = get_path(s_cmd[0], env);
 	else
@@ -86,13 +85,13 @@ int	child_process(t_pipes *data, char **env, int i, t_lists *tmp)
 		return (1);
 	if (data->pids[i] == 0)
 	{
-		if (data->list->docs->flag != -1 && data->list->docs->flag != 100)
-			redir_files(data, data->list, i);
-		if (data->list->docs->flag == 100)
-			 return (0); 
+		redir_files(data, data->list, i);
 		close_files(tmp);
 		pipes_redirs(data, i, tmp);
-		exec(data->list->docs->file, env);
+		if (data->list->docs->flag == 100)
+			 return (0); 
+		if (data->list->docs->fd < 0)
+			exec(data->list->docs->file, env);
 	}
 	return (0);
 }
@@ -104,9 +103,7 @@ int	main(int ac, char **av, char **env)
 	if (ac < 5)
 		exit_handler(EXIT_FAILURE);
 	data = ft_calloc(1, sizeof(t_pipes));
-	if (init_pid(&data, ac))
-		return (1);
-	if (init_list(data, ac))
+	if (init_pid(&data, ac) || init_list(data, ac))
 		return (1);
 	if (get_cmd(data, av))
 	{
@@ -116,7 +113,7 @@ int	main(int ac, char **av, char **env)
 	init_files(data);
 	if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac <= 5)
 		ft_free_struct(data);
-	parent_process(data, 0, ac - 1, env);
+	parent_process(data, 0, env);
 	/*else if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac > 5)
 		here_doc(&data);
 	else

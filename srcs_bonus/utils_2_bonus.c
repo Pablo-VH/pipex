@@ -86,6 +86,7 @@ int	add_list(t_lists *list)
 	new->docs = (t_docs *)malloc(sizeof(t_docs));
 	if (!new->docs)
 		return (1);
+	new->docs->fd = -1;
 	new->next = NULL;
 	while (list->next)
 		list = list->next;

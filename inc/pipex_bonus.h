@@ -68,7 +68,7 @@ void	init_files(t_pipes *data);
 void	init_inflag(t_pipes *data);
 void	init_outflags(t_lists *lst, t_lists *first);
 void	open_file(char *file, int in_or_out, int *fd);
-void	parent_process(t_pipes *data, int i, int ac, char **env);
+void	parent_process(t_pipes *data, int i, char **env);
 void	pipes_redirs(t_pipes *data, int i, t_lists *list);
 void	redir_files(t_pipes *data, t_lists *list, int i);
 void	wait_pids(t_pipes *data, int i);
