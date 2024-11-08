@@ -48,11 +48,11 @@ void	close_pipes(t_pipes *data, int i)
 	}
 	if (data->fd)
 	{
-		/*while (data->fd[i])
+		while (data->fd[i])
 		{
 			free(data->fd[i]);
 			i++;
-		}*/
+		}
 		free(data->fd);
 	}
 	data->fd = NULL;

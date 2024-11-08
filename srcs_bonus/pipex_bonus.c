@@ -85,13 +85,11 @@ int	child_process(t_pipes *data, char **env, int i, t_lists *tmp)
 		return (1);
 	if (data->pids[i] == 0)
 	{
-		redir_files(data, data->list, i);
-		close_files(tmp);
 		pipes_redirs(data, i, tmp);
-		if (data->list->docs->flag == 100)
-			 return (0); 
-		if (data->list->docs->fd < 0)
-			exec(data->list->docs->file, env);
+		if (i == 0 || i == data->num_cmds - 1)
+			redir_files(data, data->list, i);
+		close_files(tmp);
+		exec(data->list->docs->cmd, env);
 	}
 	return (0);
 }
@@ -99,11 +97,15 @@ int	child_process(t_pipes *data, char **env, int i, t_lists *tmp)
 int	main(int ac, char **av, char **env)
 {
 	t_pipes	*data;
+	int		i;
 
 	if (ac < 5)
 		exit_handler(EXIT_FAILURE);
+	i = 3;
 	data = ft_calloc(1, sizeof(t_pipes));
-	if (init_pid(&data, ac) || init_list(data, ac))
+	if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0)
+		i = 4;
+	if (init_pid(&data, ac, i) || init_list(data, ac))
 		return (1);
 	if (get_cmd(data, av))
 	{

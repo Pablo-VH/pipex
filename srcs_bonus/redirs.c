@@ -80,7 +80,9 @@ void	init_files(t_pipes *data)
 	tmp = data->list;
 	while (data->list)
 	{
-		if (data->list->docs->flag > 0 && data->list->docs->flag != 100)
+		if (data->list->docs->file &&
+			ft_strncmp(data->list->docs->file,
+			"here_doc", ft_strlen(data->list->docs->file)))
 			open_file(data->list->docs->file, data->list->docs->flag,
 				&data->list->docs->fd);
 		if (data->list->docs->flag == 2)

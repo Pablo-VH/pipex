@@ -26,6 +26,7 @@ typedef struct s_docs
 {
 	int		flag;
 	char	*file;
+	char	*cmd;
 	int		fd;
 }			t_docs;
 
@@ -38,8 +39,11 @@ typedef struct s_lists
 typedef struct s_pipes
 {
 	int		**fd;
+	char	*limiter;
+	int		mode;
 	pid_t	*pids;
 	int		num_cmds;
+	int		argcs;
 	t_lists	*list;
 }			t_pipes;
 
@@ -51,7 +55,7 @@ int		do_fork(t_pipes *data, int i);
 int		get_cmd(t_pipes *data, char **av);
 int		init_fd(t_pipes *data);
 int		init_list(t_pipes *data, int ac);
-int		init_pid(t_pipes **data, int ac);
+int		init_pid(t_pipes **data, int ac, int i);
 void	check_fd_in(int *fd);
 void	close_files(t_lists *list);
 void	close_pipes(t_pipes *data, int i);

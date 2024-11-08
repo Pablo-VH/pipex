@@ -97,12 +97,15 @@ void	parent_process(t_pipes *data, int i, char **env)
 	t_lists *tmp;
 
 	tmp = data->list;
-	while (i < data->num_cmds -1)
+	while (i < data->num_cmds)
 	{
-		if (child_process(data, env, i, tmp))
-			break ;
+		if (data->list->docs->cmd)
+		{
+			if (child_process(data, env, i, tmp))
+				break ;
+			i++;
+		}
 		data->list = data->list->next;
-		i++;
 	}
 	data->list = tmp;
 	close_pipes(data, 0);
