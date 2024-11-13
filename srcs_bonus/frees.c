@@ -83,6 +83,8 @@ void	free_lists(t_lists *lst)
 		{
 			if (tmp->docs->file)
 				free(tmp->docs->file);
+			if (tmp->docs->cmd)
+				free(tmp->docs->cmd);
 			free(tmp->docs);
 		}
 		free(tmp);

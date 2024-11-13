@@ -25,7 +25,7 @@ void	pipes_redirs(t_pipes *data, int i, t_lists *list)
 			exit(1);
 		}
 	}
-	if (i < data->num_cmds - 1)
+	if (i < data->num_cmds -1)
 	{
 		if (dup2(data->fd[i][1], 1) == -1)
 		{

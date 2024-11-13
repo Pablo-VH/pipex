@@ -12,21 +12,22 @@
 
 #include "pipex_bonus.h"
 
-int	get_cmd(t_pipes *data, char **av)
+int	get_cmd(t_pipes *data, char **av, int i)
 {
-	int		i;
 	t_lists	*tmp;
 
-	i = 1;
 	tmp = data->list;
-	data->mode = 2;
-	if (ft_strncmp(av[i], "here_doc", ft_strlen(av[1])) == 0)
-		data->mode = 3;
+	data->list->docs->file = ft_strdup(av[i++]);
 	while (data->list)
 	{
-		if (i == 1 || i == data->num_cmds + data->mode)
+		if (i == data->num_cmds + data->mode - 1)
+		{
+			data->list->docs->cmd = ft_strdup(av[i]);
+			i++;
 			data->list->docs->file = ft_strdup(av[i]);
-		else if (data->mode == 3 && i == 2)
+			break ;
+		}
+		if (data->mode == 3 && i == 2)
 			data->limiter = ft_strdup(av[i]);
 		else
 			data->list->docs->cmd = ft_strdup(av[i]);
@@ -34,8 +35,7 @@ int	get_cmd(t_pipes *data, char **av)
 		i++;
 	}
 	data->list = tmp;
-	init_inflag(data);
-	return (0);
+	return (init_inflag(data), 0);
 }
 
 void	init_inflag(t_pipes *data)
@@ -65,10 +65,8 @@ void	init_inflag(t_pipes *data)
 	data->list = tmp;
 }
 
-int	init_pid(t_pipes **data, int ac, int i)
+int	init_pid(t_pipes **data)
 {
-	(*data)->num_cmds = ac - i;
-	ft_printf("%d\n", (*data)->num_cmds);
 	(*data)->pids = malloc(sizeof(pid_t) * ((*data)->num_cmds));
 	ft_printf("%p\n", (*data)->pids);
 	if (!(*data)->pids)
@@ -102,7 +100,7 @@ int	init_fd(t_pipes *data)
 	return (0);
 }
 
-int	init_list(t_pipes *data, int ac)
+int	init_list(t_pipes *data)
 {
 	int		i;
 	t_lists	*tmp;
@@ -118,7 +116,7 @@ int	init_list(t_pipes *data, int ac)
 	data->list->next = NULL;
 	data->list->docs->fd = -1;
 	tmp = data->list;
-	while (i < ac - 1)
+	while (i < data->num_cmds)
 	{
 		if (add_list(data->list))
 		{

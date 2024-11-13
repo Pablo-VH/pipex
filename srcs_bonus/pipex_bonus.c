@@ -41,7 +41,7 @@ void	here_doc_put_in(t_pipes *data, int i)
 	char	*limitador;
 
 	close(data->fd[i][0]);
-	limitador = ft_strjoin(data->list->next->docs->file, "\n");
+	limitador = ft_strjoin(data->limiter, "\n");
 	while (1)
 	{
 		ret = get_next_line(0);
@@ -57,8 +57,32 @@ void	here_doc_put_in(t_pipes *data, int i)
 	}
 }
 
+/*void	here_doc_put_in(t_pipes *data, int *p_fd)
+{
+	char	*ret;
+	char	*limitador;
+
+	close(p_fd[0]);
+	limitador = ft_strjoin(data->limiter, "\n");
+	while (1)
+	{
+		ret = get_next_line(0);
+		if (ft_strncmp(ret, limitador, ft_strlen(limitador)) == 0)
+		{
+			free(ret);
+			free(limitador);
+			close(p_fd[1]);
+			exit(0);
+		}
+		ft_putstr_fd(ret, p_fd[1]);
+		free(ret);
+	}
+}*/
 /*void	here_doc(t_pipes *data)
 {
+	pid_t	pid;
+	int		p_fd[2];
+
 	if (pipe(p_fd) == -1)
 		exit(EXIT_FAILURE);
 	pid = fork();
@@ -66,9 +90,9 @@ void	here_doc_put_in(t_pipes *data, int i)
 		exit(EXIT_FAILURE);
 	if (!pid)
 	{
-		if (fd_out > 2)
-			close(fd_out);
-		here_doc_put_in(av, p_fd);
+		close_files(data->list);
+		close_pipes(data, 0);
+		here_doc_put_in(data, p_fd);
 	}
 	else
 	{
@@ -97,17 +121,14 @@ int	child_process(t_pipes *data, char **env, int i, t_lists *tmp)
 int	main(int ac, char **av, char **env)
 {
 	t_pipes	*data;
-	int		i;
 
 	if (ac < 5)
 		exit_handler(EXIT_FAILURE);
-	i = 3;
 	data = ft_calloc(1, sizeof(t_pipes));
-	if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0)
-		i = 4;
-	if (init_pid(&data, ac, i) || init_list(data, ac))
+	check_args(data, av, ac);
+	if (init_pid(&data) || init_list(data))
 		return (1);
-	if (get_cmd(data, av))
+	if (get_cmd(data, av, 1))
 	{
 		ft_free_struct(data);
 		return (1);

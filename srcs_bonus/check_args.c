@@ -1,46 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   frees_2.c                                          :+:      :+:    :+:   */
+/*   check_args.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pavicent <pavicent@student.42madrid>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/30 12:24:17 by pavicent          #+#    #+#             */
-/*   Updated: 2024/10/30 12:24:19 by pavicent         ###   ########.fr       */
+/*   Created: 2024/11/13 11:11:34 by pavicent          #+#    #+#             */
+/*   Updated: 2024/11/13 11:11:36 by pavicent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-void	free_fd(t_pipes *data)
+void	check_args(t_pipes *data, char **av, int ac)
 {
 	int	i;
-
-	i = 0;
-	if (data->fd)
+	if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0 && ac < 6)
 	{
-		if (data->fd[i])
-		{
-			while (data->fd[i])
-			{
-				free(data->fd[i]);
-				i++;
-			}
-		}
-		free(data->fd);
-		data->fd = NULL;
+		free(data);
+		exit_handler(2);
 	}
+	else if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0 && ac >= 6)
+	{
+		data->mode = 3;
+		i = 4;
+	}
+	else
+	{
+		data->mode = 2;
+		i = 3;
+	}
+	data->num_cmds = ac - i;
 }
-
-/*void	free_cmds(t_pipes *data)
-{
-	t_lists	*tmp;
-
-	tmp = data->list;
-	while (data->list)
-	{
-		if (data->list->docs->file)
-			free(data->list->docs->file);
-		if (data->list->docs->cmd)
-	}
-}*/

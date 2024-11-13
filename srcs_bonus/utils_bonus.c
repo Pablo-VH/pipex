@@ -15,7 +15,9 @@
 void	exit_handler(int n_ex)
 {
 	if (n_ex == 1)
-		ft_putstr_fd("./pipex infile cmd cmd outfile\n", 2);
+		ft_putstr_fd("./pipex_bonus infile cmd cmd outfile\n", 2);
+	if (n_ex == 2)
+		ft_putstr_fd("./pipex_bonus here_doc LIMITER cmd cmd outfile\n", 2);
 	exit (EXIT_FAILURE);
 }
 
