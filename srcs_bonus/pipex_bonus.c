@@ -134,8 +134,6 @@ int	main(int ac, char **av, char **env)
 		return (1);
 	}
 	init_files(data);
-	if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac <= 5)
-		ft_free_struct(data);
 	parent_process(data, 0, env);
 	/*else if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac > 5)
 		here_doc(&data);

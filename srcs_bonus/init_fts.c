@@ -68,7 +68,6 @@ void	init_inflag(t_pipes *data)
 int	init_pid(t_pipes **data)
 {
 	(*data)->pids = malloc(sizeof(pid_t) * ((*data)->num_cmds));
-	ft_printf("%p\n", (*data)->pids);
 	if (!(*data)->pids)
 	{
 		perror("malloc pids");
