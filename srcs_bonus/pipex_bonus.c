@@ -44,15 +44,16 @@ void	here_doc_put_in(t_pipes *data, int i)
 	limitador = ft_strjoin(data->limiter, "\n");
 	while (1)
 	{
-		ret = get_next_line(0);
-		if (ft_strncmp(ret, limitador, ft_strlen(limitador)) == 0)
+		ret = get_next_line(STDIN_FILENO);
+		if (ret == NULL ||
+			ft_strncmp(ret, limitador, ft_strlen(limitador)) == 0)
 		{
 			free(ret);
 			free(limitador);
-			close(data->fd[i][1]);
+			close(data->fd[0][1]);
 			exit(0);
 		}
-		ft_putstr_fd(ret, data->fd[i][1]);
+		ft_putstr_fd(ret, data->fd[0][1]);
 		free(ret);
 	}
 }
@@ -61,6 +62,8 @@ void	here_doc_put_in(t_pipes *data, int i)
 {
 	char	*ret;
 	char	*limitador;
+	pid_t	pid;
+	int		p_fd[2];
 
 	close(p_fd[0]);
 	limitador = ft_strjoin(data->limiter, "\n");
@@ -80,9 +83,6 @@ void	here_doc_put_in(t_pipes *data, int i)
 }*/
 /*void	here_doc(t_pipes *data)
 {
-	pid_t	pid;
-	int		p_fd[2];
-
 	if (pipe(p_fd) == -1)
 		exit(EXIT_FAILURE);
 	pid = fork();
@@ -102,6 +102,29 @@ void	here_doc_put_in(t_pipes *data, int i)
 		waitpid(pid, NULL, 0);
 	}
 }*/
+void	here_doc(t_pipes *data)
+{
+    pid_t	pid;
+
+    pid = fork();
+    if (pid == -1)
+        exit(EXIT_FAILURE);
+    if (pid == 0)
+    {
+        close_files(data->list);
+        close_pipes(data, 0);
+        close(data->fd[0][0]);
+        here_doc_put_in(data, 0);
+        exit(EXIT_SUCCESS);
+    }
+    else
+    {
+        close(data->fd[0][1]);
+        dup2(data->fd[0][0], STDIN_FILENO);
+        close(data->fd[0][0]);
+        waitpid(pid, NULL, 0);
+    }
+}
 
 int	child_process(t_pipes *data, char **env, int i, t_lists *tmp)
 {
@@ -134,6 +157,8 @@ int	main(int ac, char **av, char **env)
 		return (1);
 	}
 	init_files(data);
+	if (data->mode == 3)
+		here_doc(data);
 	parent_process(data, 0, env);
 	/*else if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac > 5)
 		here_doc(&data);

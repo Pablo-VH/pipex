@@ -48,8 +48,6 @@ void	init_inflag(t_pipes *data)
 	{
 		data->list->docs->flag = 1;
 		data->list = data->list->next;
-		data->list->docs->flag = 100;
-		data->list = data->list->next;
 	}
 	else
 	{

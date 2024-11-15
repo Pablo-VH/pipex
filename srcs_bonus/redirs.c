@@ -85,7 +85,7 @@ void	init_files(t_pipes *data)
 			"here_doc", ft_strlen(data->list->docs->file)))
 			open_file(data->list->docs->file, data->list->docs->flag,
 				&data->list->docs->fd);
-		if (data->list->docs->flag == 2)
+		if (data->list->docs->flag  && data->list->docs->flag == 2)
             check_fd_in(&data->list->docs->fd);
 		data->list = data->list->next;
 	}

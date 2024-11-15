@@ -87,6 +87,8 @@ int	add_list(t_lists *list)
 	if (!new->docs)
 		return (1);
 	new->docs->fd = -1;
+	new->docs->cmd = NULL;
+	new->docs->file = NULL;
 	new->next = NULL;
 	while (list->next)
 		list = list->next;
