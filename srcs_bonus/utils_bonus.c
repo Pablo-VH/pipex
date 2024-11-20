@@ -99,8 +99,6 @@ void	parent_process(t_pipes *data, int i, char **env)
 	t_lists *tmp;
 
 	tmp = data->list;
-	if (data->mode == 3)
-		here_doc(data);
 	while (i < data->num_cmds)
 	{
 		if (data->list->docs->cmd)

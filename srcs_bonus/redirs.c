@@ -59,14 +59,13 @@ void	duplication(t_pipes *data, int std, t_lists *list)
 	//data->list->docs->fd = -1;
 }
 
-void	redir_files(t_pipes *data, t_lists *list, int i)
+void	redir_files(t_pipes *data, t_lists *list)
 {
 	if (data->list && data->list->docs && data->list->docs->file)
 	{
-		if (data->list->docs->flag == 2)
+		if (data->list->docs->flag == 2
+			|| data->list->docs->flag == 1)
 			duplication(data, 0, list);
-		else if (data->list->docs->flag == 1)
-			here_doc_put_in(data, i);
 		else if (data->list->docs->flag == 4
 			|| data->list->docs->flag == 3) //append
 			duplication(data, 1, list);
@@ -76,23 +75,24 @@ void	redir_files(t_pipes *data, t_lists *list, int i)
 void	init_files(t_pipes *data)
 {
 	t_lists	*tmp;
+	char	*str;
 
 	tmp = data->list;
 	if (data->mode == 3)
 	{
-		free(data->list->docs->file);
+		str = data->list->docs->file;
 		data->list->docs->file = ft_strdup("tmp.txt");
+		free(str);
 	}
 	while (data->list)
 	{
-		if (data->list->docs->file &&
-			ft_strncmp(data->list->docs->file,
-			"tmp.txt", ft_strlen(data->list->docs->file)))
-			open_file(data->list->docs->file, data->list->docs->flag,
-				&data->list->docs->fd);
-		else
+		if (data->list->docs->flag == 1 || data->list->docs->flag == 2)
+			open_file(data->list->docs->file, 2, &data->list->docs->fd);
+		else if (data->list->docs->flag == 3)
+			open_file(data->list->docs->file, 3, &data->list->docs->fd);
+		else if (data->list->docs->flag == 4)
 			open_file(data->list->docs->file, 4, &data->list->docs->fd);
-		if (data->list->docs->flag  && data->list->docs->flag == 2)
+		if (data->list->docs->flag && data->list->docs->flag == 2)
             check_fd_in(&data->list->docs->fd);
 		data->list = data->list->next;
 	}

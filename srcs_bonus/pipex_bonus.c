@@ -45,8 +45,8 @@ void	here_doc_put_in(t_pipes *data, int i)
 	while (1)
 	{
 		ret = get_next_line(STDIN_FILENO);
-		if (ret == NULL ||
-			ft_strncmp(ret, limitador, ft_strlen(limitador)) == 0)
+		if (ret == NULL
+			|| ft_strncmp(ret, limitador, ft_strlen(limitador)) == 0)
 		{
 			free(ret);
 			free(limitador);
@@ -102,7 +102,7 @@ void	here_doc_put_in(t_pipes *data, int i)
 		waitpid(pid, NULL, 0);
 	}
 }*/
-void	here_doc(t_pipes *data)
+/*void	here_doc(t_pipes *data)
 {
     pid_t	pid;
 
@@ -124,6 +124,34 @@ void	here_doc(t_pipes *data)
         close(data->fd[0][0]);
         waitpid(pid, NULL, 0);
     }
+}*/
+
+int	init_here_doc(t_pipes *data)
+{
+	int		fd;
+	char	buffer[BUFFER_LENGTH];
+	ssize_t	bytes_read;
+
+	free(data->list->docs->file);
+	data->list->docs->file= ft_strdup("tmp.txt");
+	open_file(data->list->docs->file, 4, &fd);
+	while (1)
+	{
+		ft_printf("here_doc> ");
+		bytes_read = read(STDIN_FILENO, buffer, sizeof(buffer));
+		if (bytes_read == -1)
+		{
+			perror("pipex: Error reading form stdin");
+			return (close(fd), 1);
+		}
+		if (bytes_read == 0 || ft_strncmp(buffer, data->limiter,
+			ft_strlen(data->limiter)) == 0)
+			break ;
+		if (write(fd, buffer, bytes_read) != bytes_read)
+			return (perror("pipex => Error writing to fd"), 1);
+	}
+	close (fd);
+	return (0);
 }
 
 int	child_process(t_pipes *data, char **env, int i, t_lists *tmp)
@@ -134,7 +162,7 @@ int	child_process(t_pipes *data, char **env, int i, t_lists *tmp)
 	{
 		pipes_redirs(data, i, tmp);
 		if (i == 0 || i == data->num_cmds - 1)
-			redir_files(data, data->list, i);
+			redir_files(data, data->list);
 		close_files(tmp);
 		exec(data->list->docs->cmd, env);
 	}
@@ -156,9 +184,15 @@ int	main(int ac, char **av, char **env)
 		ft_free_struct(data);
 		return (1);
 	}
-	init_files(data);
 	if (data->mode == 3)
-		here_doc(data);
+	{
+		if (init_here_doc(data))
+		{
+			ft_free_struct(data);
+			return (1);
+		}
+	}
+	init_files(data);
 	parent_process(data, 0, env);
 	/*else if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac > 5)
 		here_doc(&data);

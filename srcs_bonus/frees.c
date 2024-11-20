@@ -26,11 +26,18 @@ void	ft_free_struct(t_pipes *data)
 		}
 		free(data->fd);
 	}
+	if (data->mode == 3)
+	{
+		if (access(data->list->docs->file, F_OK) == 0)
+			unlink(data->list->docs->file);
+	}
 	if (data->pids)
 		free(data->pids);
 	free_fd(data);
 	if (data->list)
 		free_lists(data->list);
+	if (data->limiter)
+		free(data->limiter);
 	free(data);
 }
 

@@ -28,9 +28,11 @@ int	get_cmd(t_pipes *data, char **av, int i)
 			break ;
 		}
 		if (data->mode == 3 && i == 2)
+		{
 			data->limiter = ft_strdup(av[i]);
-		else
-			data->list->docs->cmd = ft_strdup(av[i]);
+			i++;
+		}
+		data->list->docs->cmd = ft_strdup(av[i]);
 		data->list = data->list->next;
 		i++;
 	}
