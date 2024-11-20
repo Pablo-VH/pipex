@@ -58,74 +58,6 @@ void	here_doc_put_in(t_pipes *data, int i)
 	}
 }
 
-/*void	here_doc_put_in(t_pipes *data, int *p_fd)
-{
-	char	*ret;
-	char	*limitador;
-	pid_t	pid;
-	int		p_fd[2];
-
-	close(p_fd[0]);
-	limitador = ft_strjoin(data->limiter, "\n");
-	while (1)
-	{
-		ret = get_next_line(0);
-		if (ft_strncmp(ret, limitador, ft_strlen(limitador)) == 0)
-		{
-			free(ret);
-			free(limitador);
-			close(p_fd[1]);
-			exit(0);
-		}
-		ft_putstr_fd(ret, p_fd[1]);
-		free(ret);
-	}
-}*/
-/*void	here_doc(t_pipes *data)
-{
-	if (pipe(p_fd) == -1)
-		exit(EXIT_FAILURE);
-	pid = fork();
-	if (pid == -1)
-		exit(EXIT_FAILURE);
-	if (!pid)
-	{
-		close_files(data->list);
-		close_pipes(data, 0);
-		here_doc_put_in(data, p_fd);
-	}
-	else
-	{
-		close(p_fd[1]);
-		dup2(p_fd[0], 0);
-		close(p_fd[0]);
-		waitpid(pid, NULL, 0);
-	}
-}*/
-/*void	here_doc(t_pipes *data)
-{
-    pid_t	pid;
-
-    pid = fork();
-    if (pid == -1)
-        exit(EXIT_FAILURE);
-    if (pid == 0)
-    {
-        close_files(data->list);
-        close_pipes(data, 0);
-        close(data->fd[0][0]);
-        here_doc_put_in(data, 0);
-        exit(EXIT_SUCCESS);
-    }
-    else
-    {
-        close(data->fd[0][1]);
-        dup2(data->fd[0][0], STDIN_FILENO);
-        close(data->fd[0][0]);
-        waitpid(pid, NULL, 0);
-    }
-}*/
-
 int	init_here_doc(t_pipes *data)
 {
 	int		fd;
@@ -133,7 +65,7 @@ int	init_here_doc(t_pipes *data)
 	ssize_t	bytes_read;
 
 	free(data->list->docs->file);
-	data->list->docs->file= ft_strdup("tmp.txt");
+	data->list->docs->file = ft_strdup("tmp.txt");
 	open_file(data->list->docs->file, 4, &fd);
 	while (1)
 	{
@@ -145,7 +77,7 @@ int	init_here_doc(t_pipes *data)
 			return (close(fd), 1);
 		}
 		if (bytes_read == 0 || ft_strncmp(buffer, data->limiter,
-			ft_strlen(data->limiter)) == 0)
+				ft_strlen(data->limiter)) == 0)
 			break ;
 		if (write(fd, buffer, bytes_read) != bytes_read)
 			return (perror("pipex => Error writing to fd"), 1);
@@ -194,11 +126,4 @@ int	main(int ac, char **av, char **env)
 	}
 	init_files(data);
 	parent_process(data, 0, env);
-	/*else if ((ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0) && ac > 5)
-		here_doc(&data);
-	else
-		first_pipe(&data, av);
-	while (i < ac - 2)
-		do_pipe(&data, env);
-	do_pipe2(av[ac - 2], env, fd_out, p_fd);*/
 }

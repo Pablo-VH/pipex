@@ -56,7 +56,6 @@ void	duplication(t_pipes *data, int std, t_lists *list)
 		exit(1);
 	}
 	close(data->list->docs->fd);
-	//data->list->docs->fd = -1;
 }
 
 void	redir_files(t_pipes *data, t_lists *list)
@@ -67,7 +66,7 @@ void	redir_files(t_pipes *data, t_lists *list)
 			|| data->list->docs->flag == 1)
 			duplication(data, 0, list);
 		else if (data->list->docs->flag == 4
-			|| data->list->docs->flag == 3) //append
+			|| data->list->docs->flag == 3)
 			duplication(data, 1, list);
 	}
 }
@@ -93,7 +92,7 @@ void	init_files(t_pipes *data)
 		else if (data->list->docs->flag == 4)
 			open_file(data->list->docs->file, 4, &data->list->docs->fd);
 		if (data->list->docs->flag && data->list->docs->flag == 2)
-            check_fd_in(&data->list->docs->fd);
+			check_fd_in(&data->list->docs->fd);
 		data->list = data->list->next;
 	}
 	data->list = tmp;
@@ -106,7 +105,7 @@ void	wait_pids(t_pipes *data, int i)
 		if (data->pids)
 		{
 			while (waitpid(data->pids[i], NULL, 0) != -1)
-			continue ;
+				continue ;
 		}
 		i++;
 	}

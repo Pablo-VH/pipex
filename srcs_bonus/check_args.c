@@ -15,6 +15,7 @@
 void	check_args(t_pipes *data, char **av, int ac)
 {
 	int	i;
+
 	if (ft_strncmp(av[1], "here_doc", ft_strlen(av[1])) == 0 && ac < 6)
 	{
 		free(data);

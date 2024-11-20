@@ -96,7 +96,7 @@ char	*get_path(char	*cmd, char **env)
 
 void	parent_process(t_pipes *data, int i, char **env)
 {
-	t_lists *tmp;
+	t_lists	*tmp;
 
 	tmp = data->list;
 	while (i < data->num_cmds)
