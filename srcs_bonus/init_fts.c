@@ -37,7 +37,8 @@ int	get_cmd(t_pipes *data, char **av, int i)
 		i++;
 	}
 	data->list = tmp;
-	return (init_inflag(data), 0);
+	init_inflag(data);
+	return (0);
 }
 
 void	init_inflag(t_pipes *data)

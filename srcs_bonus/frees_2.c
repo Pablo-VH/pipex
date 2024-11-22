@@ -31,16 +31,3 @@ void	free_fd(t_pipes *data)
 		data->fd = NULL;
 	}
 }
-
-/*void	free_cmds(t_pipes *data)
-{
-	t_lists	*tmp;
-
-	tmp = data->list;
-	while (data->list)
-	{
-		if (data->list->docs->file)
-			free(data->list->docs->file);
-		if (data->list->docs->cmd)
-	}
-}*/

@@ -12,7 +12,7 @@
 
 #include "pipex_bonus.h"
 
-int	do_fork(t_pipes *data, int i) //sacarlo fuera?
+int	do_fork(t_pipes *data, int i)
 {
 	data->pids[i] = fork();
 	if (data->pids[i] == -1)
@@ -63,9 +63,7 @@ void	do_pipe2(char *cmd, char **env, int fd, int *p_fd)
 void	check_fd_in(int *fd)
 {
 	if (*fd > 0)
-	{
 		return ;
-	}
 	else
 	{
 		*fd = open("/dev/null", O_RDONLY);
